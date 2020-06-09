@@ -5,10 +5,10 @@ This document provides information to the user about how to deploy and consume C
 The topics covered in this document are:
 
 - performance addon operator
-- sriov operator
-- ptp operator
-- sctp module
-- dpdk s2i
+- SR-IOV operator
+- PTP operator
+- SCTP module
+- DPDK s2i
 
 **NOTE:** In each case, we deliberately choose to use plain yaml manifests to deploy the components to provide the user a clear view of what assets are involved.
 
@@ -144,7 +144,7 @@ After creating this CR, you can monitor the machineconfigpools master and worker
 
 **NOTE:** All the nodes will initially be rebooted the first time, as a feature gate for the topology manager gets enabled.
 
-# Sriov Operator
+# SR-IOV Operator
 
 ## Deployment
 
@@ -190,7 +190,7 @@ After the operator gets installed, We have the following CRS:
 - SriovNetwork 
 - SriovNetworkNodePolicy
 
-SriovNetworkNodeState CRS are readonly and provide information about SRIOV capable devices in the cluster. We can list them with `oc get sriovnetworknodestates.sriovnetwork.openshift.io -n openshift-sriov-network-operator  -o yaml`
+SriovNetworkNodeState CRS are readonly and provide information about SR-IOV capable devices in the cluster. We can list them with `oc get sriovnetworknodestates.sriovnetwork.openshift.io -n openshift-sriov-network-operator  -o yaml`
 
 Expected Output
 
@@ -421,7 +421,7 @@ spec:
     image: alpine
 ```
 
-# Ptp Operator
+# PTP Operator
 
 ## Deployment
 
@@ -501,14 +501,14 @@ spec:
 
 The difference between those two CRS lies in :
 
-- the ptp4lOpts and phc2sysOpts attributes of the profile
-- the matching done between a profile and nodeLabel
+- the ptp4lOpts and phc2sysOpts attributes of the profile.
+- the matching done between a profile and nodeLabel.
 
 We can then monitor the linuxptp-daemon pods of each node to check how the profile gets applied (and sync occurs, if a grandmaster is found).
 
-# Sctp module
+# SCTP module
 
-The sctp module consists of a single machineconfig, which makes sure that the sctp module is not blacklisted and loaded at boot time. We can inject the following manifest with `oc apply -f`
+The SCTP module consists of a single machineconfig, which makes sure that the sctp module is not blacklisted and loaded at boot time. We can inject the following manifest with `oc apply -f`
 
 ```
 apiVersion: machineconfiguration.openshift.io/v1
@@ -538,11 +538,11 @@ spec:
 
 Once done, and provided there is a matching mcp in the cluster, the node will get rebooted and have the module loaded, which can be checked by sshing in the node (or running `oc debug node/$node`) and running `sudo lsmod | grep sctp`.
 
-# Dpdk s2i
+# DPDK s2i
 
-This part covers an image containing dpdk framework and built using source to image. It depends on sriov beeing deployed and working on the cluster.
+This part covers an image containing DPDK framework and built using source to image. It depends on sriov beeing deployed and working on the cluster.
 
-You would use this mechanism to build and package a dpdk based application from a git repository but using a dpdk well known base image.
+You would use this mechanism to build and package a dpdk based application from a git repository but using a DPDK well known base image.
 
 
 ## Deployment
