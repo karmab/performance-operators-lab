@@ -35,6 +35,8 @@ spec:
       from:
         kind: DockerImage
         name: registry.redhat.io/openshift4/dpdk-base-rhel8
+      pullSecret:
+        name: redhat-io-secret
     type: Source
   successfulBuildsHistoryLimit: 5
   triggers:

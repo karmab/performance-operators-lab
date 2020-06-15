@@ -540,8 +540,8 @@ How to use
 ----------
 
 The operator deploys the CR PtpConfig that we can use to configure the
-nodes. For instance, to configure a node as PTP grandmaster, we can
-inject the following CR
+nodes by matching them with a specific label. For instance, to configure
+a node as PTP grandmaster, we can inject the following CR
 
 ::
 
@@ -588,11 +588,30 @@ The difference between those two CRS lies in :
 -  the ptp4lOpts and phc2sysOpts attributes of the profile.
 -  the matching done between a profile and nodeLabel.
 
+We can then Label the workers that need specific configuration. For
+instance, for the nodes to be used as grandmaster:
+
+::
+
+    oc label node your_worker ptp/grandmaster='' --overwrite
+
 We can then monitor the linuxptp-daemon pods of each node to check how
 the profile gets applied (and sync occurs, if a grandmaster is found).
 
 SCTP module
 ===========
+
+Launch the following command:
+
+::
+
+    oc create -f sctp/install.yml
+
+Expected Output
+
+::
+
+    machineconfig.machineconfiguration.openshift.io/load-sctp-module created
 
 The SCTP module consists of a single machineconfig, which makes sure
 that the sctp module is not blacklisted and loaded at boot time. We can
@@ -652,8 +671,27 @@ image and its pushing against image registry
 
     oc create -f dpdk/dpdk-network.yml
     oc create -f dpdk/scc.yml
+
+We will create a secret so that we can pull the dpdk base image from
+redhat.io
+
+::
+
+    SECRET='registrysecret'
+    REGISTRY='registry.redhat.io'
+    USERNAME='XXX'
+    PASSWORD='YYY'
+    MAIL="ZZZ"
+    oc create secret docker-registry $SECRET --docker-server=$REGISTRY --docker-username=$USERNAME --docker-password=$PASSWORD --docker-email=$MAIL
+    oc secrets link default $SECRET --for=pull
+    oc secrets link builder $SECRET --for=pull
+
+Then we launch the building of the image from source code and its
+pushing against image registry:
+
+::
+
     oc create -f dpdk/build-config.yml
-    oc create -f dpdk/deployment-config.yml
 
 **NOTE:** the build config points to
 https://github.com/openshift-kni/cnf-features-deploy/tree/master/tools/s2i-dpdk/test/test-app

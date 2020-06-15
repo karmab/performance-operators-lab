@@ -529,7 +529,7 @@ oc create -f sctp/install.yml
 Expected Output
 
 ```
-machineconfig.openshift.io/load-sctp-module created
+machineconfig.machineconfiguration.openshift.io/load-sctp-module created
 ```
 
 The SCTP module consists of a single machineconfig, which makes sure that the sctp module is not blacklisted and loaded at boot time. We can inject the following manifest with `oc apply -f`
@@ -571,13 +571,35 @@ You would use this mechanism to build and package a dpdk based application from 
 
 ## Deployment
 
+
+
+
 We launch the following yamls, which will trigger the building of the image and its pushing against image registry
 
 ```
 oc create -f dpdk/dpdk-network.yml
 oc create -f dpdk/scc.yml
+```
+
+
+We will create a secret so that we can pull the dpdk base image from redhat.io
+
+
+```
+SECRET='registrysecret'
+REGISTRY='registry.redhat.io'
+USERNAME='XXX'
+PASSWORD='YYY'
+MAIL="ZZZ"
+oc create secret docker-registry $SECRET --docker-server=$REGISTRY --docker-username=$USERNAME --docker-password=$PASSWORD --docker-email=$MAIL
+oc secrets link default $SECRET --for=pull
+oc secrets link builder $SECRET --for=pull
+```
+
+Then we launch the building of the image from source code and its pushing against image registry:
+
+```
 oc create -f dpdk/build-config.yml
-oc create -f dpdk/deployment-config.yml
 ```
 
 **NOTE:** the build config points to https://github.com/openshift-kni/cnf-features-deploy/tree/master/tools/s2i-dpdk/test/test-app as a sample app. In a real world, you would point to the source code where your application lives.
