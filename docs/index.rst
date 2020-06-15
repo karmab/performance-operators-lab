@@ -192,6 +192,14 @@ SR-IOV Operator
 Deployment
 ----------
 
+**NOTE:** In order to connect our pod to a real dhcp network, we need to
+patch the openshift network operator to Add a dummy dhcp network to
+start the dhcp daemonset by the operator.
+
+::
+
+    oc patch networks.operator.openshift.io cluster --type='merge' -p='{"spec":{"additionalNetworks":[{"name":"dummy-dhcp-network","simpleMacvlanConfig":{"ipamConfig":{"type":"dhcp"},"master":"eth0","mode":"bridge","mtu":1500},"type":"SimpleMacvlan"}]}}'
+
 Launch the following command:
 
 ::

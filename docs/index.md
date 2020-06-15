@@ -76,7 +76,6 @@ The workflow goes as follows:
 oc label node your_worker node-role.kubernetes.io/worker-cnf='' --overwrite
 ```
 
-
 - Create machine config pools that matches previously set labels. As previous task, it's admin's responsability to create those assets to match its platforms
 
 for instance we can use the following definition and create it with `oc apply -f`
@@ -147,6 +146,12 @@ After creating this CR, you can monitor the machineconfigpools master and worker
 # SR-IOV Operator
 
 ## Deployment
+
+**NOTE:** In order to connect our pod to a real dhcp network, we need to patch the openshift network operator to Add a dummy dhcp network to start the dhcp daemonset by the operator.
+
+```
+oc patch networks.operator.openshift.io cluster --type='merge' -p='{"spec":{"additionalNetworks":[{"name":"dummy-dhcp-network","simpleMacvlanConfig":{"ipamConfig":{"type":"dhcp"},"master":"eth0","mode":"bridge","mtu":1500},"type":"SimpleMacvlan"}]}}'
+```
 
 Launch the following command:
 
@@ -458,7 +463,7 @@ Beyond operator, we can see linuxptp-daemons pods for each node, which encapsula
 
 ## How to use
 
-The operator deploys the CR PtpConfig that we can use to configure the nodes. For instance, to configure a node as PTP grandmaster, we can inject the following CR
+The operator deploys the CR PtpConfig that we can use to configure the nodes by matching them with a specific label. For instance, to configure a node as PTP grandmaster, we can inject the following CR
 
 ```
 apiVersion: ptp.openshift.io/v1
@@ -505,9 +510,27 @@ The difference between those two CRS lies in :
 - the ptp4lOpts and phc2sysOpts attributes of the profile.
 - the matching done between a profile and nodeLabel.
 
+We can then Label the workers that need specific configuration. For instance, for the nodes to be used as grandmaster: 
+
+```
+oc label node your_worker ptp/grandmaster='' --overwrite
+```
+
 We can then monitor the linuxptp-daemon pods of each node to check how the profile gets applied (and sync occurs, if a grandmaster is found).
 
 # SCTP module
+
+Launch the following command:
+
+```
+oc create -f sctp/install.yml
+```
+
+Expected Output
+
+```
+machineconfig.openshift.io/load-sctp-module created
+```
 
 The SCTP module consists of a single machineconfig, which makes sure that the sctp module is not blacklisted and loaded at boot time. We can inject the following manifest with `oc apply -f`
 
