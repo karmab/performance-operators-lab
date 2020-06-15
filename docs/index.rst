@@ -8,10 +8,10 @@ understand how to deploy those elements and how to properly use them.
 The topics covered in this document are:
 
 -  performance addon operator
--  sriov operator
--  ptp operator
--  sctp module
--  dpdk s2i
+-  SR-IOV operator
+-  PTP operator
+-  SCTP module
+-  DPDK s2i
 
 **NOTE:** In each case, we deliberately choose to use plain yaml
 manifests to deploy the components to provide the user a clear view of
@@ -29,6 +29,8 @@ from beginning to end:
 -  oc installed and configured with KUBECONFIG env variable.
 -  imageregistry properly configured with a valid backend for dpdk s2i
    push to work.
+-  git tool and repository
+   ``https://github.com/karmab/performance-operators-lab`` cloned
 
 **NOTE:** Both masters and workers can be virtual. If using virtual
 workers, you will only be able to properly use the performance profile
@@ -36,6 +38,13 @@ operator and sctp module, as the other ones have hardware dependency.
 
 **NOTE:** If running disconnected, you will have to adapt the source
 field in the install samples to match your environment.
+
+Clone the repo where we host the sample assets:
+
+::
+
+    git clone https://github.com/karmab/performance-operators-lab
+    cd performance-operators-lab
 
 Performance addon operator
 ==========================
@@ -175,8 +184,8 @@ the features.
 **NOTE:** All the nodes will initially be rebooted the first time, as a
 feature gate for the topology manager gets enabled.
 
-Sriov Operator
-==============
+SR-IOV Operator
+===============
 
 .. _deployment-1:
 
@@ -218,19 +227,21 @@ Expected Output
     sriov-network-config-daemon-jhhwp         1/1     Running       1          88m
     sriov-network-operator-5f8cb9fb58-ql648   1/1     Running       0          113m
 
-Beyond operator, we can see sriov-network-config-daemon pods for each
-node.
+Beyond operator, sriov-network-config-daemon pods appear for each node.
 
 .. _how-to-use-1:
 
 How to use
 ----------
 
-After the operator gets installed, We have the following CRS: -
-SriovNetworkNodeState - SriovNetwork - SriovNetworkNodePolicy
+After the operator gets installed, We have the following CRS:
+
+-  SriovNetworkNodeState
+-  SriovNetwork
+-  SriovNetworkNodePolicy
 
 SriovNetworkNodeState CRS are readonly and provide information about
-SRIOV capable devices in the cluster. We can list them with
+SR-IOV capable devices in the cluster. We can list them with
 ``oc get sriovnetworknodestates.sriovnetwork.openshift.io -n openshift-sriov-network-operator  -o yaml``
 
 Expected Output
@@ -444,10 +455,8 @@ instance:
       resourceName: sriovnic
       vlan: 0
 
-We can check with
-``oc get network-attachment-definitions -n sriov-testing`` that a new
-network-attachment-definition got created, which we can then use in our
-pod definition, as we would for other multus backends.
+A new network-attachment-definition got created, which we can then use
+in our pod definition, as we would for other multus backends.
 
 ::
 
@@ -460,7 +469,7 @@ Expected Output
     NAME           AGE
     sriov-network   3d14h
 
-We can now create pods making use of this network attachment definition:
+Pods can be created making use of this network attachment definition:
 
 ::
 
@@ -477,7 +486,7 @@ We can now create pods making use of this network attachment definition:
         command: ["/bin/sh", "-c", "trap : TERM INT; sleep 600000& wait"]
         image: alpine
 
-Ptp Operator
+PTP Operator
 ============
 
 .. _deployment-2:
@@ -499,8 +508,8 @@ Expected Output
     operatorgroup.operators.coreos.com/ptp-operators created
     subscription.operators.coreos.com/ptp-operator-subscription created
 
-You can then wait for operators to show in the openshift-ptp namespace
-with ``oc get pod -n openshift-ptp``
+We wait for operators to show in the openshift-ptp namespace with
+``oc get pod -n openshift-ptp``
 
 Expected Output
 
@@ -568,16 +577,16 @@ Or, for a slave:
 
 The difference between those two CRS lies in :
 
--  the ptp4lOpts and phc2sysOpts attributes of the profile
--  the matching done between a profile and nodeLabel
+-  the ptp4lOpts and phc2sysOpts attributes of the profile.
+-  the matching done between a profile and nodeLabel.
 
 We can then monitor the linuxptp-daemon pods of each node to check how
 the profile gets applied (and sync occurs, if a grandmaster is found).
 
-Sctp module
+SCTP module
 ===========
 
-The sctp module consists of a single machineconfig, which makes sure
+The SCTP module consists of a single machineconfig, which makes sure
 that the sctp module is not blacklisted and loaded at boot time. We can
 inject the following manifest with ``oc apply -f``
 
@@ -612,15 +621,15 @@ will get rebooted and have the module loaded, which can be checked by
 sshing in the node (or running ``oc debug node/$node``) and running
 ``sudo lsmod | grep sctp``.
 
-Dpdk s2i
+DPDK s2i
 ========
 
-This part covers an image containing dpdk framework and built using
+This part covers an image containing DPDK framework and built using
 source to image. It depends on sriov beeing deployed and working on the
 cluster.
 
 You would use this mechanism to build and package a dpdk based
-application from a git repository but using a dpdk well known base
+application from a git repository but using a DPDK well known base
 image.
 
 .. _deployment-3:

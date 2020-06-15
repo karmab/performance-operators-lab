@@ -20,7 +20,7 @@ The following items are needed in order to be able to complete the lab from begi
 * In a disconnected environment, imagecontentsources and catalog sources in place.
 * oc installed and configured with KUBECONFIG env variable.
 * imageregistry properly configured with a valid backend for dpdk s2i push to work.
-* git tool.
+* git tool and repository `https://github.com/karmab/performance-operators-lab` cloned
 
 **NOTE:** Both masters and workers can be virtual. If using virtual workers, you will only be able to properly use the performance profile operator and sctp module, as the other ones have hardware dependency.
 
@@ -181,11 +181,12 @@ sriov-network-config-daemon-jhhwp         1/1     Running       1          88m
 sriov-network-operator-5f8cb9fb58-ql648   1/1     Running       0          113m
 ```
 
-Beyond operator, we can see sriov-network-config-daemon pods for each node.
+Beyond operator, sriov-network-config-daemon pods appear for each node.
 
 ## How to use
 
 After the operator gets installed, We have the following CRS:
+
 - SriovNetworkNodeState
 - SriovNetwork 
 - SriovNetworkNodePolicy
@@ -391,7 +392,7 @@ spec:
   vlan: 0
 ```
 
-We can check with `oc get network-attachment-definitions -n sriov-testing` that a new network-attachment-definition got created, which we can then use in our pod definition, as we would for other multus backends.
+A new network-attachment-definition got created, which we can then use in our pod definition, as we would for other multus backends.
 
 ```
 oc get network-attachment-definitions -n sriov-testing
@@ -404,7 +405,7 @@ NAME           AGE
 sriov-network   3d14h
 ```
 
-We can now create pods making use of this network attachment definition:
+Pods can be created making use of this network attachment definition:
 
 ```
 apiVersion: v1
@@ -439,7 +440,7 @@ operatorgroup.operators.coreos.com/ptp-operators created
 subscription.operators.coreos.com/ptp-operator-subscription created
 ```
 
-You can then wait for operators to show in the openshift-ptp namespace with `oc get pod -n openshift-ptp`
+We wait for operators to show in the openshift-ptp namespace with `oc get pod -n openshift-ptp`
 
 Expected Output
 
