@@ -562,17 +562,15 @@ spec:
 
 Once done, and provided there is a matching mcp in the cluster, the node will get rebooted and have the module loaded, which can be checked by sshing in the node (or running `oc debug node/$node`) and running `sudo lsmod | grep sctp`.
 
-# DPDK s2i
+# DPDK base image
 
-This part covers an image containing DPDK framework and built using source to image. It depends on sriov beeing deployed and working on the cluster.
+This part covers a base mage containing DPDK framework. It depends on sriov beeing deployed and working on the cluster.
 
-You would use this mechanism to build and package a dpdk based application from a git repository but using a DPDK well known base image.
+This image can be used as a base to build and package a dpdk based application.
 
+For instance, we will use source to image as a example of mechanism allowing to do the build from a git repository.
 
 ## Deployment
-
-
-
 
 We launch the following yamls, which will trigger the building of the image and its pushing against image registry
 
@@ -581,9 +579,7 @@ oc create -f dpdk/dpdk-network.yml
 oc create -f dpdk/scc.yml
 ```
 
-
 We will create a secret so that we can pull the dpdk base image from redhat.io
-
 
 ```
 SECRET='registrysecret'
