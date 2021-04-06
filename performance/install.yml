@@ -10,9 +10,6 @@ kind: OperatorGroup
 metadata:
   name: openshift-performance-addon-operatorgroup
   namespace: openshift-performance-addon
-spec:
-  targetNamespaces:
-  - openshift-performance-addon
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -20,7 +17,7 @@ metadata:
   name: performance-addon-operator-subscription
   namespace: openshift-performance-addon
 spec:
-  channel: "4.4"
+  channel: "4.7"
   name: performance-addon-operator
   source: "redhat-operators"
   sourceNamespace: openshift-marketplace
