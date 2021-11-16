@@ -66,7 +66,7 @@ performance-operator-6694c8c9fb-q64qw   1/1     Running   1          123m
 
 The performance addon operator deploys a custom resource (CR) named *performanceprofile* that we can use to configure the nodes. Creating such profile will trigger the creation of underlying objects such as machineconfigs or tuned objects, with handling done by more lowlevel operators.
 
-The full list of attributes handled by the operator can be see [here](https://github.com/openshift-kni/performance-addon-operators/blob/master/deploy/crds/performance.openshift.io_performanceprofiles_crd.yaml).
+The full list of attributes handled by the operator can be see [here](https://github.com/openshift-kni/performance-addon-operators/blob/master/api/v2/performanceprofile_types.go).
 
 The workflow goes as follows:
 
