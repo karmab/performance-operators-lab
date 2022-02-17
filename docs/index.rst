@@ -118,7 +118,7 @@ In This definition, note that:
 
 ::
 
-   apiVersion: performance.openshift.io/v1alpha1
+   apiVersion: performance.openshift.io/v2
    kind: PerformanceProfile
    metadata:
      name: worker-cnf
