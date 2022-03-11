@@ -23,6 +23,7 @@ The following items are needed in order to be able to complete the lab from begi
 -  oc installed and configured with KUBECONFIG env variable.
 -  imageregistry properly configured with a valid backend for dpdk s2i push to work.
 -  git tool and repository ``https://github.com/karmab/performance-operators-lab`` cloned
+-  tasty binary available `here <https://github.com/karmab/tasty/releases/>`__ to simplify olm operator installation
 
 **NOTE:** Both masters and workers can be virtual. If using virtual workers, you will only be able to properly use the performance profile operator and sctp module, as the other ones have hardware dependency.
 
@@ -47,13 +48,12 @@ Launch the following command:
 
 ::
 
-   oc create -f performance/install.yml
+   tasty install performance-addon-operator
 
 Expected Output
 
 ::
 
-   namespace/openshift-performance-addon created
    operatorgroup.operators.coreos.com/openshift-performance-addon-operatorgroup created
    subscription.operators.coreos.com/performance-addon-operator-subscription created
 
@@ -167,7 +167,7 @@ Launch the following command:
 
 ::
 
-   oc create -f sriov/install.yml
+   tasty install sriov-network-operator
 
 Expected Output
 
@@ -452,7 +452,7 @@ Launch the following command:
 
 ::
 
-   oc create -f ptp/install.yml
+   tasty install ptp-operator
 
 Expected Output
 
