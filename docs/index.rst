@@ -25,7 +25,7 @@ The following items are needed in order to be able to complete the lab from begi
 -  git tool and repository ``https://github.com/karmab/performance-operators-lab`` cloned
 -  tasty binary available `here <https://github.com/karmab/tasty/releases/>`__ to simplify olm operator installation
 
-**NOTE:** Both masters and workers can be virtual. If using virtual workers, you will only be able to properly use the performance profile operator and sctp module, as the other ones have hardware dependency.
+**NOTE:** Both ctlplanes and workers can be virtual. If using virtual workers, you will only be able to properly use the performance profile operator and sctp module, as the other ones have hardware dependency.
 
 **NOTE:** If running disconnected, you will have to adapt the source field in the install samples to match your environment.
 
